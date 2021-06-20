@@ -10,11 +10,12 @@ from tensorflow.keras.models import load_model
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+from PyQt5.QtGui import QPixmap
 
 import inspect
 from PyQt5 import Qt
 # from overlayButton import TranslucentWidget
-
+from sigs import WidgetSignals
 import os
 
 
@@ -68,13 +69,19 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         # button shit
 
         self.close_btn = QtWidgets.QPushButton(self)
-        self.close_btn.setText("CLICK ME")
+        # self.close_btn.setText("CLICK ME")
         font = QtGui.QFont()
         font.setPixelSize(18)
         font.setBold(True)
         self.close_btn.setFont(font)
-        self.close_btn.setStyleSheet("background-color: rgb(0, 0, 0, 0)")
+        # self.close_btn.setStyleSheet("background-color: rgb(0, 0, 0, 0)")
         self.close_btn.setFixedSize(30, 30)
+
+        # self.close_btn.setStyleSheet("background-image : url(btn_icon.png);")
+        self.close_btn.setIcon(QtGui.QIcon('btn_icon.png'))
+        self.close_btn.setIconSize(QtCore.QSize(40, 30))
+        self.close_btn.setStyleSheet('QPushButton{border: 0px solid;}')
+        #     "background-image: url('btn_icon.png'); border: none;")
         self.close_btn.move(280, 320)
         self.close_btn.clicked.connect(self._onclose)
 
@@ -84,6 +91,11 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         # # self._popframe.SIGNALS.CLOSE.connect(self._closepopup)
         # self._popflag = True
         # self._popframe.show()
+        self.SIGNALS = WidgetSignals()
+
+    def _onclose(self):
+        print("Close")
+        self.SIGNALS.CLOSE.emit()
 
     def detect_faces(self, frame):
         # frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25,

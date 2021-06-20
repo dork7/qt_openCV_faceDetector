@@ -1,3 +1,4 @@
+from sigs import WidgetSignals
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
@@ -5,7 +6,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton
 
 from appUI import Ui_MainWindow
 from detectorWidget import FaceDetectionWidget, RecordVideo
-from overlayButton import TranslucentWidget
+from sigs import WidgetSignals
 import sys
 
 
@@ -37,6 +38,11 @@ class MainWindow:
         self.timer.timeout.connect(self.time)
         self.timer.start(2000)
         self.timer.isSingleShot()
+
+        self.SIGNALS = WidgetSignals()
+        # self._popframe.move(0, 0)
+        # self._popframe.resize(self.width(), self.height())
+        self.face_detection_widget.SIGNALS.CLOSE.connect(self.closeCamera)
         # self.setLayout(layout)
 
     def time(self):
@@ -49,6 +55,10 @@ class MainWindow:
         self.main_win.show()
 
     def showTempPg(self):
+        print("called")
+        self.ui.stackedWidget.setCurrentIndex(3)
+
+    def closeCamera(self):
         print("called")
         self.ui.stackedWidget.setCurrentIndex(3)
 
