@@ -45,6 +45,9 @@ class RecordVideo(QtCore.QObject):
         print("Clikd")
         self.timer.start(0, self)
 
+    def stop_recording(self):
+        self.timer.stop()
+
     def timerEvent(self, event):
         if (event.timerId() != self.timer.timerId()):
             return
@@ -64,7 +67,7 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         self._width = 2
         self._min_size = (30, 30)
         self.displayWidth = 480
-        self.displayHeight = 720
+        self.displayHeight = 640
 
         # button shit
 
@@ -74,23 +77,15 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         font.setPixelSize(18)
         font.setBold(True)
         self.close_btn.setFont(font)
-        # self.close_btn.setStyleSheet("background-color: rgb(0, 0, 0, 0)")
         self.close_btn.setFixedSize(30, 30)
 
-        # self.close_btn.setStyleSheet("background-image : url(btn_icon.png);")
         self.close_btn.setIcon(QtGui.QIcon('btn_icon.png'))
         self.close_btn.setIconSize(QtCore.QSize(40, 30))
         self.close_btn.setStyleSheet('QPushButton{border: 0px solid;}')
         #     "background-image: url('btn_icon.png'); border: none;")
-        self.close_btn.move(280, 320)
+        self.close_btn.move(380, 320)
         self.close_btn.clicked.connect(self._onclose)
 
-        # self._popframe = TranslucentWidget(self)
-        # self._popframe.move(0, 0)
-        # self._popframe.resize(self.width(), self.height())
-        # # self._popframe.SIGNALS.CLOSE.connect(self._closepopup)
-        # self._popflag = True
-        # self._popframe.show()
         self.SIGNALS = WidgetSignals()
 
     def _onclose(self):

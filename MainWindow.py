@@ -1,5 +1,10 @@
+from PyQt5.sip import delete
 from sigs import WidgetSignals
 from PyQt5 import QtCore
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.uic import *
+from types import *
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton
@@ -15,10 +20,14 @@ class MainWindow:
         self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
+        self.main_win.setMaximumSize(480, 640)
+        self.main_win.setMinimumSize(480, 640)
+        self.main_win.setAttribute(Qt.WA_AcceptTouchEvents)
+        self.redImg = QPixmap('images/redImg.jpg')
+        self.blueImg = QPixmap('images/blueImg.jpg')
 
         fp = 'haarcascade_frontalface_default.xml'
         self.ui.stackedWidget.setCurrentIndex(0)
-        # self.ui.pushButton.clicked.connect(self.showTempPg)
         self.face_detection_widget = FaceDetectionWidget(fp)
 
         # TODO: set video port
@@ -30,20 +39,16 @@ class MainWindow:
         layout = QVBoxLayout()
         layout.addWidget(self.face_detection_widget)
 
-        # self.record_video.start_recording()
-
         self.ui.widget.setLayout(layout)
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.time)
-        self.timer.start(2000)
+        self.timer.start(0000)
         self.timer.isSingleShot()
-
         self.SIGNALS = WidgetSignals()
-        # self._popframe.move(0, 0)
-        # self._popframe.resize(self.width(), self.height())
-        self.face_detection_widget.SIGNALS.CLOSE.connect(self.closeCamera)
-        # self.setLayout(layout)
+        self.face_detection_widget.SIGNALS.CLOSE.connect(self.showTempPg)
+        self.ui.pushButton_2.clicked.connect(self.showSettings)
+        self.ui.pushButton_3.clicked.connect(self.time)
 
     def time(self):
         # self.label.hide()
@@ -55,12 +60,29 @@ class MainWindow:
         self.main_win.show()
 
     def showTempPg(self):
+        print("camera close called")
         print("called")
+        self.record_video.stop_recording()
+        # change index to 3 to see setting page
         self.ui.stackedWidget.setCurrentIndex(3)
+        # set image on the basis of detector
+        detected = 1
+        if detected:
+            self.setTempImg(self.redImg)
+        elif not detected:
+            self.setTempImg(self.blueImg)
 
     def closeCamera(self):
-        print("called")
+        self.record_video.stop_recording()
         self.ui.stackedWidget.setCurrentIndex(3)
+
+    def showSettings(self):
+        self.ui.stackedWidget.setCurrentIndex(4)
+
+    def setTempImg(self, img):
+        self.ui.tempImg.setPixmap(img)
+        self.ui.tempImg.show()
+        self.timer.start(4000)
 
 
 if __name__ == '__main__':
